@@ -61,7 +61,6 @@ model.load_weights('./_save/keras28/keras28_5_save_weights2.h5')
 model.summary()
 
 
-
 #3. 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam')
 # start = time.time()
