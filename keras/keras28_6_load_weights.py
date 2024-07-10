@@ -112,7 +112,6 @@ print('r2 score :', r2)
 # plt.grid()  # 격자 표시
 # plt.show()
 
-
 """ 
 loss : 19.358457565307617
 r2 score : 0.7410106081250936
