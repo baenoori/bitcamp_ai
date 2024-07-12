@@ -81,38 +81,6 @@ print('r2 score :', r2)
 
 
 
-
-
-# print("걸린 시간 :", round(end-start,2),'초')
-
-# print("=================== hist ==================")
-# print(hist)
-
-# print("================ hist.history =============")
-# print(hist.history)
-
-# print("================ loss =============")
-# print(hist.history['loss'])
-# print("================ val_loss =============")
-# print(hist.history['val_loss'])
-# print("==================================================")
-
-
-# import matplotlib.pyplot as plt
-
-# plt.rcParams['font.family'] ='Malgun Gothic'     # 한글 깨짐 해결, 폰트 적용
-
-# plt.figure(figsize=(9,6))   # 9 x 6 사이즈 
-# plt.plot(hist.history['loss'],c='red', label='loss',)  # y값 만 넣으면 시간 순으로 그려줌 
-# plt.plot(hist.history['val_loss'], c='blue', label = 'val_loss')
-# plt.legend(loc='upper right')   # 우측 상단 label 표시
-# plt.title('보스턴 Loss')
-# plt.xlabel('epoch')
-# plt.ylabel('loss')
-# plt.grid()  # 격자 표시
-# plt.show()
-
-
 """ 
 loss : 19.358457565307617
 r2 score : 0.7410106081250936
