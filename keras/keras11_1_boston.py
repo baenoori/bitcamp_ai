@@ -20,7 +20,7 @@ print(x.shape)  # (506, 13)
 print(y)
 print(y.shape)  # (506, )
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=414)
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=123)
 
 #2. 모델 구성
 model = Sequential()

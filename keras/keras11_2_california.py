@@ -43,9 +43,9 @@ print('r2 score : ', r2)
 
 """ 
 test_size : 0.2
-random_state : 179
+random_state : 189
 epo : 500
 batch_size : 40
-loss : 0.6347915530204773
-r2 score :  0.524596324258566
+loss : 0.6045974493026733
+r2 score :  0.5415096393393787
 """
