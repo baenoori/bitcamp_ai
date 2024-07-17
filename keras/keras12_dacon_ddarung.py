@@ -16,7 +16,7 @@ print(train_csv)    # (id열 포함) [1459 rows x 11 columns] / (id열 제외) [
 test_csv = pd.read_csv(path + "test.csv", index_col=0) 
 print(test_csv)     # [715 rows x 9 columns]
 
-submission_csv = pd.read_csv(path + "submission.csv", index_col=0) 
+submission_csv = pd.read_csv(path + "submission.csv", index_col=0)      
 print(submission_csv)   # [715 rows x 1 columns], NaN : 결측치 (비어있는 데이터)
 
 print(train_csv.shape)  # (1459, 10)
@@ -58,15 +58,15 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_
 
 #2. 모델 구성
 model = Sequential()
-model.add(Dense(10, input_dim=9))
-model.add(Dense(10))    
-model.add(Dense(10))
-model.add(Dense(10))
+model.add(Dense(10, activation='relu', input_dim=9))
+model.add(Dense(10, activation='relu'))    
+model.add(Dense(10, activation='relu'))
+model.add(Dense(10, activation='relu'))
 model.add(Dense(1))
 
 #3. 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam')
-model.fit(x_train, y_train, epochs=1000, batch_size=8)
+model.fit(x_train, y_train, epochs=1000, batch_size=8) 
 
 #4. 평가, 예측
 loss = model.evaluate(x_test,y_test)
@@ -122,7 +122,7 @@ print(submission_csv)
 print(submission_csv.shape) # (715, 1)
 print('loss :', loss)
 
-submission_csv.to_csv(path + "submission_0716_1850.csv")    #csv 만들기
+submission_csv.to_csv(path + "submission_0717_1100.csv")    #csv 만들기
 
 
 # 파일 이름 수정하고 loss 값을 줄여서 dacon에 제출!

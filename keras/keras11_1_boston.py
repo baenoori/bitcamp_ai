@@ -10,7 +10,11 @@ from sklearn.model_selection import train_test_split
 
 #1. 데이터 
 dataset = load_boston()
-# print(dataset)
+print(dataset)
+print(dataset.DESCR)    # 07.17 추가. describe 확인 
+print(dataset.feature_names)
+# ['CRIM' 'ZN' 'INDUS' 'CHAS' 'NOX' 'RM' 'AGE' 'DIS' 'RAD' 'TAX' 'PTRATIO'
+#  'B' 'LSTAT']
 
 x = dataset.data    # x데이터 분리
 y = dataset.target  # y데이터 분리, sklearn 문법

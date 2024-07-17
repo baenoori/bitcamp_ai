@@ -20,9 +20,9 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_
 
 #2. 모델 구성
 model = Sequential()
-model.add(Dense(10, input_dim=10))
-model.add(Dense(10))
-model.add(Dense(10))
+model.add(Dense(10, activation='relu', input_dim=10))
+model.add(Dense(10, activation='relu'))
+model.add(Dense(10, activation='relu'))
 model.add(Dense(1))
 
 #3. 컴파일, 훈련
