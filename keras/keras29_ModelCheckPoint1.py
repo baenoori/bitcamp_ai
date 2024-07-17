@@ -41,9 +41,7 @@ model.add(Dense(1))
 model.compile(loss='mse', optimizer='adam')
 
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
-es = EarlyStopping(monitor='val_loss', mode='min', 
-    
-)
+es = EarlyStopping(monitor='val_loss', mode='min', patience=100, restore_best_weights=True)
 
 start = time.time()
 hist = model.fit(x_train, y_train, epochs=10, batch_size=16,
