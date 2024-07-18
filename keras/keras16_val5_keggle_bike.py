@@ -1,4 +1,4 @@
-#12 dacon_ddarung copy
+#13_kaggle_bike copy
 # verbose, validation 추가 
 
 # https://www.kaggle.com/competitions/bike-sharing-demand/data?select=train.csv
