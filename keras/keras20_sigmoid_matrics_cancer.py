@@ -51,7 +51,9 @@ model.add(Dense(5, activation='relu'))
 model.add(Dense(1, activation='sigmoid'))
 
 #3. 컴파일, 훈련
-model.compile(loss='mse', optimizer='adam', metrics=['acc'])    # acc와 mse 보조지표로 사용, 'acc'로 사용 가능
+# model.compile(loss='mse', optimizer='adam', metrics=['acc'])    # acc와 mse 보조지표로 사용, 'acc'로 사용 가능
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc']) 
+
 start = time.time()
 
 from tensorflow.keras.callbacks import EarlyStopping
@@ -107,6 +109,10 @@ y_predict - activation = sigmoid
  [0.00156233]
  [0.96317804]]
  -> 0과 1 사이의 값으로 나옴
+
+binary_crossentropy
+loss : 0.18100936710834503
+acc : 0.93
 
 """
 

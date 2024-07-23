@@ -44,7 +44,7 @@ scalar=MinMaxScaler()
 x[:] = scalar.fit_transform(x[:])
 test_csv[:] = scalar.fit_transform(test_csv[:])
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=512)
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=5324)
 
 #2. 모델 구성
 model = Sequential()
@@ -61,12 +61,12 @@ model.add(Dense(1, activation='sigmoid'))
 
 
 #3. 컴파일, 훈련
-model.compile(loss='mse', optimizer='adam', metrics=['acc'])
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
 start = time.time()
 es = EarlyStopping(
     monitor='val_loss',
     mode='min',
-    patience=20,
+    patience=90,
     restore_best_weights=True
 )
 hist = model.fit(x_train, y_train, epochs=1000, batch_size=10,
@@ -74,6 +74,7 @@ hist = model.fit(x_train, y_train, epochs=1000, batch_size=10,
                  validation_split=0.2,
                  callbacks=[es]
                  )
+
 end = time.time()
 
 #4. 평가, 예측
@@ -95,12 +96,12 @@ print("걸린 시간 :", round(end-start,2),'초')
 ### csv 파일 ###
 y_submit = model.predict(test_csv)
 
-print(y_submit)
+# print(y_submit)
 y_submit = np.round(y_submit)
 # print(y_submit)
 sampleSubmission_csv['Exited'] = y_submit
 # print(sampleSubmission_csv)
-sampleSubmission_csv.to_csv(path + "sampleSubmission_0722_2140.csv")
+sampleSubmission_csv.to_csv(path + "sampleSubmission_0723_1220.csv")
 
 print(sampleSubmission_csv['Exited'].value_counts())
 
@@ -121,8 +122,12 @@ acc_score : 0.786597188560349
 
 걸린 시간 : 85.12 초
 
+binary_crossentropy 
+loss : 0.32630449533462524
+acc : 0.862
 
-
+loss : 0.32269835472106934
+acc : 0.86
 
 """
 

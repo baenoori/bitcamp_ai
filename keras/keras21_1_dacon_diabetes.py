@@ -44,7 +44,8 @@ model.add(Dense(1, activation='sigmoid'))
 
 
 #3. 컴파일, 훈련
-model.compile(loss='mse', optimizer='adam', metrics=['acc'])
+# model.compile(loss='mse', optimizer='adam', metrics=['acc'])
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
 start = time.time()
 
 es = EarlyStopping(
@@ -84,7 +85,7 @@ y_submit = np.round(y_submit)
 # print(y_submit)
 sampleSubmission_csv['Outcome'] = y_submit
 # print(sampleSubmission_csv)
-sampleSubmission_csv.to_csv(path + "sampleSubmission_0722_1645.csv")
+sampleSubmission_csv.to_csv(path + "sampleSubmission_0723_1130.csv")
 
 """
 random_state=512
@@ -108,5 +109,11 @@ r2 score : 0.08785252475280703
 acc_score : 0.696969696969697
 걸린 시간 : 50.02 초
 
+binary_crossentropy
+loss : 0.5893502831459045
+acc : 0.773
+r2 score : 0.1748338244034645
+acc_score : 0.7727272727272727
+걸린 시간 : 19.69 초
 """
 
