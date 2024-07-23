@@ -38,7 +38,7 @@ print(y)
 # print(y)
 
 # ohe = OneHotEncoder(sparse=False)   # True가 디폴트,
-# one.fit(y)
+# ohe.fit(y)
 # y = ohe.transform(y)      # scaler할 때 사용
 
 # from tensorflow.keras.utils import to_categorical   # keras 이용
