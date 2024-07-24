@@ -27,6 +27,8 @@ print(pd.value_counts(y))
 # 1    50
 # 2    50
 
+
+
 ######## one hot encoding ########
 y = pd.get_dummies(y)   # pd 이용
 print(y)
@@ -46,7 +48,9 @@ print(y)
 # print(y)
 
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=2321)
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=2321,
+                                                    stratify=y)
+
 
 #2. 모델 구성
 model = Sequential()
@@ -98,6 +102,7 @@ print('acc_score :', accuracy_score)
 print("걸린 시간 :", round(end-start,2),'초')
 
 
+
 """
 loss : 0.005562429782003164
 acc : 1.0
@@ -105,4 +110,11 @@ r2 score : 0.9993626651204535
 acc_score : 1.0
 걸린 시간 : 7.11 초
 
+stratify=y 추가
+
+loss : 0.1818111538887024
+acc : 0.933
+r2 score : 0.8174484591437388
+acc_score : 0.9333333333333333
+걸린 시간 : 3.76 초
 """

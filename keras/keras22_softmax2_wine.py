@@ -18,11 +18,12 @@ print(x.shape, y.shape)      # (178, 13) (178,)
 print(np.unique(y, return_counts=True))    # (array([0, 1, 2]), array([59, 71, 48], dtype=int64))
 
 ### one hot encoding ###
-y_ohe = pd.get_dummies(y)
-print(y_ohe)
-print(y_ohe.shape)      # (178, 3)
+y = pd.get_dummies(y)
+print(y)
+print(y.shape)      # (178, 3)
 
-x_train, x_test, y_train, y_test = train_test_split(x, y_ohe, test_size=0.1, random_state=512)
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=512,
+                                                    stratify=y)
 
 #2. 모델 구성
 model = Sequential()
@@ -78,6 +79,12 @@ r2 score : 0.9034274762382792
 acc_score : 0.9444444444444444
 걸린 시간 : 6.33 초
 
+stratify=y
+loss : 0.09611806273460388
+acc : 0.944
+r2 score : 0.9209355269931461
+acc_score : 0.9444444444444444
+걸린 시간 : 9.17 초
 
 """
 
