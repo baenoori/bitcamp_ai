@@ -61,3 +61,6 @@ print('r2 score :', r2)
 
 print("걸린 시간 :", round(end-start,2),'초')
 
+
+
+
