@@ -60,7 +60,3 @@ r2 = r2_score(y_test, y_predict)
 print('r2 score :', r2)
 
 print("걸린 시간 :", round(end-start,2),'초')
-
-
-
-
