@@ -1,4 +1,4 @@
-# 28_1 copy
+# 29_1 copy
 
 import sklearn as sk
 from sklearn.datasets import load_boston   
@@ -50,16 +50,19 @@ mcp = ModelCheckpoint(
     mode='auto',
     verbose=1,      # 제일 좋은 값의 위치 확인을 위해
     save_best_only=True,    # 가장 좋은 값 저장
-    filepath='./_save/keras29_mcp/keras29_mcp1.hdf5',  # 저장위치, h5나 hdf5 상관없음 
+    filepath='./_save/keras29_mcp/keras29_mcp3.hdf5',  # 저장위치, h5나 hdf5 상관없음 
 )
 
 start = time.time()
-model.fit(x_train, y_train, epochs=1000, batch_size=16,
+hist = model.fit(x_train, y_train, epochs=1000, batch_size=16,
           verbose=1, 
           validation_split=0.1,
           callbacks=[es, mcp],
           )
 end = time.time()
+
+model.save('./_save/keras29_mcp/keras29_3_save_model.hdf5')
+
 
 #4. 평가, 예측
 loss = model.evaluate(x_test, y_test, verbose=1)    # 추가
@@ -73,6 +76,8 @@ print('r2 score :', r2)
 print("걸린 시간 :", round(end-start,2),'초')
 
 
-# loss : 13.143280982971191
-# r2 score : 0.8241611220530678
-# 걸린 시간 : 2.91 초
+# loss : 10.009329795837402
+# r2 score : 0.8660890417120943
+# 걸린 시간 : 4.4 초
+
+
