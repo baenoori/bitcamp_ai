@@ -21,7 +21,7 @@ print(train_csv.isna().sum())   # 0
 print(test_csv.isna().sum())    # 0
 
 # label encoder
-from sklearn.preprocessing import LabelEncoders
+from sklearn.preprocessing import LabelEncoder
 le = LabelEncoder()
 train_csv['target'] = le.fit_transform(train_csv['target'])
 # print(train_csv['target'])
