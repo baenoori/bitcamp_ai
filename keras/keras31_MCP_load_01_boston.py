@@ -1,3 +1,6 @@
+# 30_1 copy
+# mcp load
+
 import sklearn as sk
 from sklearn.datasets import load_boston   
 import numpy as np

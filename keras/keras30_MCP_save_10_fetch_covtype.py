@@ -1,5 +1,5 @@
-# 22_3 copy 
-# scaling 추가
+# 26_10 copy
+# mcp save 
 
 from sklearn.datasets import fetch_covtype
 import numpy as np

@@ -1,3 +1,5 @@
+# 30_12 copy
+# mcp load
 
 import numpy as np
 import pandas as pd

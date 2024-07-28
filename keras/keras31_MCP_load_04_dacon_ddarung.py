@@ -1,3 +1,5 @@
+# 30_4 copy
+# mcp load
 # https://dacon.io/competitions/open/235576/overview/description
 
 import numpy as np

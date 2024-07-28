@@ -1,3 +1,6 @@
+# 30_2 copy
+# mcp load
+
 import sklearn as sk
 from sklearn.datasets import fetch_california_housing
 from sklearn.metrics import r2_score

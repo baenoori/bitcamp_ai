@@ -1,3 +1,6 @@
+# 30_5 copy
+# mcp load
+
 import numpy as np
 import pandas as pd
 from tensorflow.keras.models import Sequential, load_model

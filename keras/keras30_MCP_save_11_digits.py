@@ -1,3 +1,5 @@
+# 26_11 copy
+# mcp save 
 
 from sklearn.datasets import load_digits
 import numpy as np

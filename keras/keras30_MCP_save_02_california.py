@@ -1,3 +1,6 @@
+# 26_2 copy
+# mcp save 
+
 import sklearn as sk
 from sklearn.datasets import fetch_california_housing
 

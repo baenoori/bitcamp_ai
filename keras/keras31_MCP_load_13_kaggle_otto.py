@@ -1,3 +1,5 @@
+# 30_13 copy
+# mcp load
 
 import numpy as np
 import pandas as pd
@@ -12,14 +14,14 @@ from sklearn.metrics import r2_score, accuracy_score
 path = "C:/ai5/_data/kaggle/otto-group-product-classification-challenge/"
 
 train_csv = pd.read_csv(path + "train.csv", index_col=0)
-test_csv = pd.read_csv(path + "test.csv", index_col=0)
+test_csv = pd.read_csv(path + "test.csv", index_cosl=0)
 sampleSubmission_cav = pd.read_csv(path + "sampleSubmission.csv", index_col=0)
 
 print(train_csv.isna().sum())   # 0
 print(test_csv.isna().sum())    # 0
 
 # label encoder
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoders
 le = LabelEncoder()
 train_csv['target'] = le.fit_transform(train_csv['target'])
 # print(train_csv['target'])

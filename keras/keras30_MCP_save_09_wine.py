@@ -1,5 +1,5 @@
-# 22_2 copy
-# scaling 추가
+# 26_9 copy
+# mcp save 
 from sklearn.datasets import load_wine
 import numpy as np
 import pandas as pd

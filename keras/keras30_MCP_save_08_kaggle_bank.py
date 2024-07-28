@@ -1,5 +1,5 @@
-# 21_2 copy
-# scaling 추가
+# 26_8 copy
+# mcp save 
 # https://www.kaggle.com/competitions/playground-series-s4e1/overview
 
 import numpy as np
