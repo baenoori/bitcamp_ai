@@ -19,3 +19,5 @@ import matplotlib.pyplot as plt
 plt.imshow(x_train[0], 'gray')  # 데이터 그대로 가져옴
 plt.show()
 
+
+
