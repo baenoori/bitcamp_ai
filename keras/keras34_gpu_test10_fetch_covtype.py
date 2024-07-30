@@ -97,7 +97,7 @@ output1 = Dense(7, activation='softmax')(drop3)
 model = Model(inputs = input1, outputs = output1)
 
 #3. 컴파일, 훈련
-model.compile(loss='mse', optimizer='adam')
+model.compile(loss='categorical_crossentropy', optimizer='adam')
 
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 es = EarlyStopping(monitor='val_loss', mode='min', 
