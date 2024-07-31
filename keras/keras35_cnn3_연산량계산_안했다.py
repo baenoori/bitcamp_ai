@@ -37,7 +37,7 @@ model.add(Dense(units=8))
 model.add(Dense(units=9, input_shape=(8,)))
                             # shape = (batch_size, input_dim)
 model.add(Dense(units=10, activation='softmax'))
-# model.summary()
+model.summary()
 # Layer (type)                Output Shape              Param #
 # =================================================================
 #  conv2d (Conv2D)             (None, 27, 27, 10)        50
@@ -52,6 +52,7 @@ model.add(Dense(units=10, activation='softmax'))
 
 #  dense_1 (Dense)             (None, 9)                 81
 
+#  dense_2 (Dense)             (None, 10)                100
 
 #3. 컴파일, 훈련
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
