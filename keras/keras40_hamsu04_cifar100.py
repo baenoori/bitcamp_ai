@@ -39,8 +39,14 @@ dense3 = Conv2D(128, (2,2), padding='same', activation='relu')(dense2)
 drop1 = Dropout(0.2)(dense3)
 dense5 = Conv2D(256, (2,2), padding='same', activation='relu')(drop1)
 maxp1 = MaxPooling2D()(dense5)
-Flat1 = Flatten()(maxp1)
-dense6 = Dense(256, activation='relu')(Flat1)
+dense6 = Conv2D(128, (2,2), padding='same', activation='relu')(maxp1)
+drop2 = Dropout(0.2)(dense6)
+dense7 = Conv2D(256, (2,2), padding='same', activation='relu')(drop2)
+
+
+Flat1 = Flatten()(dense7)
+drop3 = Dropout(0.7)(Flat1)
+dense6 = Dense(256, activation='relu')(drop3)
 drop2 = Dropout(0.2)(dense6)
 dense7 = Dense(128, activation='relu')(drop2)
 output1 = Dense(100, activation='softmax')(dense7)
@@ -121,10 +127,10 @@ accuracy_score : 0.3479
 걸린 시간 : 164.28 초
 
 [Max Pooling-함수형]
-loss : 2.684767723083496
-acc : 0.33
-accuracy_score : 0.3313
-걸린 시간 : 175.64 초
+loss : 2.4728777408599854
+acc : 0.37
+accuracy_score : 0.373
+걸린 시간 : 469.34 초
 
 """
 
