@@ -1,11 +1,10 @@
-# 33_11 copy
-# CPU, GPU 시간 체크 
+# DNN -> CNN
 
 from sklearn.datasets import load_digits
 import numpy as np
 import pandas as pd
 from tensorflow.keras.models import Sequential, load_model, Model
-from tensorflow.keras.layers import Dense, Dropout, Input
+from tensorflow.keras.layers import Dense, Dropout, Input, Conv2D, MaxPooling2D, Flatten
 import time
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import EarlyStopping
@@ -15,8 +14,6 @@ from sklearn.metrics import r2_score, accuracy_score
 #1. 데이터 
 x, y = load_digits(return_X_y=True)     # sklearn에서 데이터를 x,y 로 바로 반환
 
-# print(x)
-# print(y)
 # print(x.shape, y.shape)     # (1797, 64) (1797,)
 
 print(pd.value_counts(y, sort=False))   # 0~9 순서대로 정렬
@@ -34,37 +31,28 @@ print(pd.value_counts(y, sort=False))   # 0~9 순서대로 정렬
 y_ohe = pd.get_dummies(y)
 print(y_ohe.shape)          # (1797, 10)
 
+x = x.reshape(1797,8,8,1)
+
 x_train, x_test, y_train, y_test = train_test_split(x, y_ohe, test_size=0.1, random_state=7777,
                                                     stratify=y)
 
 ####### scaling (데이터 전처리) #######
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.preprocessing import MaxAbsScaler, RobustScaler
-# scaler = MinMaxScaler()
-# scaler = StandardScaler()
-# scaler = MaxAbsScaler()
-scaler = RobustScaler()
-scaler.fit(x_train)
-x_train = scaler.transform(x_train)
-x_test = scaler.transform(x_test)
+x_train = x_train/255.
+x_test = x_test/255.
 
 #2. 모델 구성
-input1 = Input(shape=(64,))
-dense1 = Dense(64, activation='relu')(input1)
-dense2 = Dense(64, activation='relu')(dense1)
-drop1 = Dropout(0.2)(dense2)
-dense3 = Dense(64, activation='relu')(drop1)
-dense4 = Dense(64, activation='relu')(dense3)
-drop2 = Dropout(0.2)(dense4)
-dense5 = Dense(64, activation='relu')(drop2)
-dense6 = Dense(64, activation='relu')(dense5)
-drop3 = Dropout(0.2)(dense6)
-dense7 = Dense(64, activation='relu')(drop3)
-dense8 = Dense(64, activation='relu')(dense7)
-drop4 = Dropout(0.2)(dense8)
-dense9 = Dense(64, activation='relu')(drop4)
-output1 = Dense(10, activation='softmax')(dense9)
-model = Model(inputs = input1, outputs = output1)
+model = Sequential()
+model.add(Conv2D(64, (3,3), input_shape=(8,8,1),padding='same' )) 
+model.add(Conv2D(filters=64, kernel_size=(3,3), activation='relu',padding='same'))
+model.add(MaxPooling2D())
+model.add(Conv2D(32, (3,3), activation='relu',  padding='same'))        
+model.add(Flatten())                            
+
+model.add(Dense(units=32, activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(units=16, input_shape=(32,), activation='relu'))
+model.add(Dense(units=16, activation='relu'))
+model.add(Dense(units=10, activation='softmax'))
 
 
 #3. 컴파일, 훈련
@@ -79,15 +67,11 @@ es = EarlyStopping(monitor='val_loss', mode='min',
 ###### mcp 세이브 파일명 만들기 ######
 import datetime
 date = datetime.datetime.now()
-print(date)    
-print(type(date))  
 date = date.strftime("%m%d_%H%M")
-print(date)     
-print(type(date))  
 
-path = './_save/keras34/'
+path = './_save/keras39/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
-filepath = "".join([path, 'k32_11_', date, '_', filename])     
+filepath = "".join([path, 'k39_11_', date, '_', filename])     
 #####################################
 
 mcp = ModelCheckpoint(
@@ -111,7 +95,7 @@ end = time.time()
 loss = model.evaluate(x_test, y_test, verbose=1)
 print('loss :',loss[0])
 # print('acc :',round(loss[1],2))
-print('acc :',loss[1])
+print('acc :',round(loss[1],2))
 
 y_pre = model.predict(x_test)
 r2 = r2_score(y_test, y_pre)
@@ -122,12 +106,6 @@ print('acc_score :', accuracy_score)
 # print('걸린 시간 :', round(end-start, 2), '초')
 print("걸린 시간 :", round(end-start,2),'초')
 
-import tensorflow as tf
-gpus = tf.config.experimental.list_physical_devices('GPU')
-if(gpus):
-    print('GPU 돈다!~!')
-else:
-    print('GPU 없다!~!')
 
 """
 loss : 0.005590484477579594
@@ -158,5 +136,11 @@ acc_score : 0.9666666666666667
 걸린 시간 : 8.07 초
 GPU 돈다!~!
 
+[DNN -> CNN]
+loss : 0.044570405036211014
+acc : 0.99
+r2 score : 0.9778775529022978
+acc_score : 0.9888888888888889
+걸린 시간 : 18.93 초
 """
 

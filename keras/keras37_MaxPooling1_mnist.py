@@ -62,29 +62,29 @@ es = EarlyStopping(monitor='val_loss', mode='min',
                    restore_best_weights=True,
                    )
 
-# ###### mcp 세이브 파일명 만들기 ######
-# import datetime
-# date = datetime.datetime.now()
-# date = date.strftime("%m%d_%H%M")
+###### mcp 세이브 파일명 만들기 ######
+import datetime
+date = datetime.datetime.now()
+date = date.strftime("%m%d_%H%M")
 
-# path = './_save/keras35/'
-# filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
-# filepath = "".join([path, 'k35_04_', date, '_', filename])   
-# #####################################
+path = './_save/keras37/'
+filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
+filepath = "".join([path, 'k37_01_', date, '_', filename])   
+#####################################
 
-# mcp = ModelCheckpoint(
-#     monitor='val_loss',
-#     mode='auto',
-#     verbose=1,     
-#     save_best_only=True,   
-#     filepath=filepath, 
-# )
+mcp = ModelCheckpoint(
+    monitor='val_loss',
+    mode='auto',
+    verbose=1,     
+    save_best_only=True,   
+    filepath=filepath, 
+)
 
 start = time.time()
 hist = model.fit(x_train, y_train, epochs=5000, batch_size=128,
           verbose=1, 
           validation_split=0.2,
-          callbacks=[es],
+          callbacks=[es, mcp],
           )
 end = time.time()
 

@@ -1,3 +1,5 @@
+# CNN -> DNN
+
 import numpy as np
 import pandas as pd
 from tensorflow.keras.datasets import mnist, fashion_mnist, cifar10, cifar100
@@ -21,6 +23,9 @@ print(np.unique(y_train, return_counts=True))   # 0 ~ 99
 x_train = x_train/255.      # 0~1 사이 값으로 바뀜
 x_test = x_test/255.
 
+x_train = x_train.reshape(50000, 32*32*3)
+x_test = x_test.reshape(10000, 32*32*3)
+
 ##### OHE
 from sklearn.preprocessing import OneHotEncoder
 ohe = OneHotEncoder(sparse=False)
@@ -31,18 +36,19 @@ y_test = ohe.fit_transform(y_test)
 
 #2. 모델 구성 
 model = Sequential()
-model.add(Conv2D(64, (3,3), input_shape=(32,32,3), strides=1, padding='same')) 
-model.add(Conv2D(filters=64, kernel_size=(3,3), activation='relu', strides=1, padding='same'))
-model.add(Conv2D(128, (2,2), activation='relu', strides=1, padding='same'))         
-model.add(Dropout(0.2))                                
-model.add(Conv2D(256, (2,2), activation='relu', strides=1, padding='same'))        
-model.add(MaxPooling2D())
-model.add(Flatten())                            
-
-model.add(Dense(units=256, activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(units=128, activation='relu'))
-model.add(Dense(units=100, activation='softmax'))
+model.add(Dense(1024, input_shape=(32*32*3,)))
+model.add(Dense(1024, activation='relu'))
+model.add(Dense(1024, activation='relu'))
+model.add(Dropout(0.1))
+model.add(Dense(512, activation='relu'))
+model.add(Dense(512, activation='relu'))
+model.add(Dropout(0.1))
+model.add(Dense(256, activation='relu'))
+model.add(Dense(256, activation='relu'))
+model.add(Dropout(0.1))
+model.add(Dense(128, activation='relu'))
+model.add(Dense(128, activation='relu'))
+model.add(Dense(100, activation='softmax'))
 
 
 #3. 컴파일, 훈련
@@ -59,9 +65,9 @@ import datetime
 date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")
 
-path = './_save/keras37/'
+path = './_save/keras38/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
-filepath = "".join([path, 'k37_04_', date, '_', filename])   
+filepath = "".join([path, 'k38_04_', date, '_', filename])   
 #####################################
 
 mcp = ModelCheckpoint(
@@ -114,9 +120,16 @@ accuracy_score : 0.316
 
 [Max Pooling]
 loss : 2.576554775238037
-acc : 0.35
+acc : 0.35z
 accuracy_score : 0.3479
 걸린 시간 : 164.28 초
+
+[[DNN]]
+loss : 3.536623001098633
+acc : 0.19
+accuracy_score : 0.1861
+걸린 시간 : 182.54 초
+
 """
 
 

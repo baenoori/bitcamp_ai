@@ -57,29 +57,29 @@ es = EarlyStopping(monitor='val_loss', mode='min',
                    restore_best_weights=True,
                    )
 
-# ###### mcp 세이브 파일명 만들기 ######
-# import datetime
-# date = datetime.datetime.now()
-# date = date.strftime("%m%d_%H%M")
+###### mcp 세이브 파일명 만들기 ######
+import datetime
+date = datetime.datetime.now()
+date = date.strftime("%m%d_%H%M")
 
-# path = './_save/keras35/'
-# filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
-# filepath = "".join([path, 'k35_06_', date, '_', filename])   
-# #####################################
+path = './_save/keras37/'
+filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
+filepath = "".join([path, 'k37_03_', date, '_', filename])   
+#####################################
 
-# mcp = ModelCheckpoint(
-#     monitor='val_loss',
-#     mode='auto',
-#     verbose=1,     
-#     save_best_only=True,   
-#     filepath=filepath, 
-# )
+mcp = ModelCheckpoint(
+    monitor='val_loss',
+    mode='auto',
+    verbose=1,     
+    save_best_only=True,   
+    filepath=filepath, 
+)
 
 start = time.time()
 hist = model.fit(x_train, y_train, epochs=2000, batch_size=64,
           verbose=1, 
           validation_split=0.2,
-          callbacks=[es],
+          callbacks=[es, mcp],
           )
 end = time.time()
 
@@ -111,10 +111,10 @@ accuracy_score : 0.6186
 걸린 시간 : 57.98 초
 
 [Max Pooling]
-loss : 0.9690350294113159
-acc : 0.66
-accuracy_score : 0.6632
-걸린 시간 : 51.57 초
+loss : 0.9801340103149414
+acc : 0.67
+accuracy_score : 0.6701
+걸린 시간 : 58.02 초
 
 
 """

@@ -1,8 +1,10 @@
+# 함수형 모델
+
 import numpy as np
 import pandas as pd
 from tensorflow.keras.datasets import mnist, fashion_mnist, cifar10, cifar100
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D
+from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D, Input
 import time
 from sklearn.metrics import r2_score, accuracy_score
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
@@ -30,19 +32,19 @@ y_train = ohe.fit_transform(y_train)
 y_test = ohe.fit_transform(y_test)
 
 #2. 모델 구성 
-model = Sequential()
-model.add(Conv2D(64, (3,3), input_shape=(32,32,3), strides=1, padding='same')) 
-model.add(Conv2D(filters=64, kernel_size=(3,3), activation='relu', strides=1, padding='same'))
-model.add(Conv2D(128, (2,2), activation='relu', strides=1, padding='same'))         
-model.add(Dropout(0.2))                                
-model.add(Conv2D(256, (2,2), activation='relu', strides=1, padding='same'))        
-model.add(MaxPooling2D())
-model.add(Flatten())                            
-
-model.add(Dense(units=256, activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(units=128, activation='relu'))
-model.add(Dense(units=100, activation='softmax'))
+input1 = Input(shape=(32,32,3))
+dense1 = Conv2D(64, (3,3), padding='same', activation='relu')(input1)
+dense2 = Conv2D(64, (3,3), padding='same', activation='relu')(dense1)
+dense3 = Conv2D(128, (2,2), padding='same', activation='relu')(dense2)
+drop1 = Dropout(0.2)(dense3)
+dense5 = Conv2D(256, (2,2), padding='same', activation='relu')(drop1)
+maxp1 = MaxPooling2D()(dense5)
+Flat1 = Flatten()(maxp1)
+dense6 = Dense(256, activation='relu')(Flat1)
+drop2 = Dropout(0.2)(dense6)
+dense7 = Dense(128, activation='relu')(drop2)
+output1 = Dense(100, activation='softmax')(dense7)
+model = Model(inputs = input1, outputs = output1)
 
 
 #3. 컴파일, 훈련
@@ -59,9 +61,9 @@ import datetime
 date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")
 
-path = './_save/keras37/'
+path = './_save/keras40/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
-filepath = "".join([path, 'k37_04_', date, '_', filename])   
+filepath = "".join([path, 'k40_04_', date, '_', filename])   
 #####################################
 
 mcp = ModelCheckpoint(
@@ -117,6 +119,13 @@ loss : 2.576554775238037
 acc : 0.35
 accuracy_score : 0.3479
 걸린 시간 : 164.28 초
+
+[Max Pooling-함수형]
+loss : 2.684767723083496
+acc : 0.33
+accuracy_score : 0.3313
+걸린 시간 : 175.64 초
+
 """
 
 
