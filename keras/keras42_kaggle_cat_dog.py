@@ -25,7 +25,7 @@ train_datagen = ImageDataGenerator(
     width_shift_range=0.1,       # 평행이동  <- 데이터 증폭
     height_shift_range=0.1,      # 평행이동 수직  <- 데이터 증폭
     rotation_range=5,            # 각도 조절 (정해진 각도만큼 이미지 회전)
-    zoom_range=1.2,              # 축소 또는 확대
+    zoom_range=1.5,              # 축소 또는 확대
     shear_range=0.7,             # 좌표 하나를 고정시키고 다른 몇개의 좌표를 이동시키는 변환 (찌부시키기)
     fill_mode='nearest',         # 10% 이동 시 한쪽은 소실, 한쪽은 가까이에 있던 부분의 이미지로 채워짐
 )
@@ -39,7 +39,7 @@ path_test = "C:/ai5/_data/kaggle/dogs-vs-cats-redux-kernels-edition/test/"
 
 xy_train = train_datagen.flow_from_directory(
     path_train,            
-    target_size=(100,100),  
+    target_size=(120,120),  
     batch_size=30000,          
     class_mode='binary',  
     color_mode='rgb',  
@@ -48,7 +48,7 @@ xy_train = train_datagen.flow_from_directory(
 
 xy_test = test_datagen.flow_from_directory(
     path_test, 
-    target_size=(100,100),
+    target_size=(120,120),
     batch_size=30000,            
     class_mode='binary',
     color_mode='rgb',
@@ -56,7 +56,7 @@ xy_test = test_datagen.flow_from_directory(
 )   
 
 
-x_train, x_test, y_train, y_test = train_test_split(xy_train[0][0], xy_train[0][1], test_size=0.2, random_state=231)
+x_train, x_test, y_train, y_test = train_test_split(xy_train[0][0], xy_train[0][1], test_size=0.1, random_state=5321)
 end1 = time.time()
 
 print('데이터 걸린시간 :',round(end1-start1,2),'초')
@@ -71,28 +71,16 @@ xy_test = xy_test[0][0]
 
 #2. 모델 구성
 model = Sequential()
-model.add(Conv2D(128, (3,3), activation="relu", input_shape=(100,100,3)))
-model.add(BatchNormalization())
-model.add(MaxPooling2D(pool_size=(2,2)))
-model.add(Dropout(0.25))
-
-model.add(Conv2D(128, (3,3), activation="relu"))
-model.add(BatchNormalization())
-model.add(MaxPooling2D(pool_size=(2,2)))
-model.add(Dropout(0.25))
-
-model.add(Conv2D(64, (3,3), activation="relu"))
-model.add(BatchNormalization())
-model.add(MaxPooling2D(pool_size=(2,2)))
-model.add(Dropout(0.25))
-          
+model.add(Conv2D(64, (3,3), input_shape=(120,120,3), strides=1, activation='relu',padding='same')) 
+model.add(Dropout(0.2))
+model.add(Conv2D(32, (3,3), activation='relu', strides=1, padding='same'))    
+model.add(MaxPooling2D())    
 model.add(Flatten())
-model.add(Dense(512, activation='relu'))
-model.add(BatchNormalization())
-model.add(Dropout(0.5))
-
-model.add(Dense(1 ,activation="sigmoid"))
-
+model.add(Dropout(0.2))
+model.add(Dense(8, activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(4, activation='relu'))
+model.add(Dense(1, activation='sigmoid'))
 
 #3. 컴파일, 훈련
 model.compile(loss='binary_crossentropy', optimizer='sgd', metrics=['acc'])
@@ -122,18 +110,20 @@ mcp = ModelCheckpoint(
 )
 
 start = time.time()
-hist = model.fit(x_train, y_train, epochs=1000, batch_size=10,
+hist = model.fit(x_train, y_train, epochs=1000, batch_size=16,
           validation_split=0.1,
           callbacks=[es, mcp],
           )
 end = time.time()
 
 #4. 평가, 예측
-loss = model.evaluate(x_test, y_test, verbose=1)
+loss = model.evaluate(x_test, y_test, verbose=1,
+                      batch_size=16
+                      )
 print('loss :', loss[0])
 print('acc :', round(loss[1],5))
 
-y_pre = model.predict(x_test)
+y_pre = model.predict(x_test,batch_size=16)
 # r2 = r2_score(y_test,y_pre)
 # print('r2 score :', r2)
 print("걸린 시간 :", round(end-start,2),'초')
@@ -144,7 +134,7 @@ print('accuracy_score :', r2)
 
 
 ### csv 파일 만들기 ###
-y_submit = model.predict(xy_test)
+y_submit = model.predict(xy_test,batch_size=8)
 # print(y_submit)
 
 # y_submit = np.round(y_submit,4)
@@ -152,7 +142,7 @@ y_submit = model.predict(xy_test)
 
 print(y_submit)
 sampleSubmission_csv['label'] = y_submit
-sampleSubmission_csv.to_csv(path1 + "sampleSubmission_0802_2020.csv")
+sampleSubmission_csv.to_csv(path1 + "sampleSubmission_0803_1840.csv")
 
 
 
@@ -163,9 +153,11 @@ acc : 0.7478
 accuracy_score : 0.7478
 loss : 0.6372641324996948
 
+
 acc : 0.6278
 걸린 시간 : 272.36 초
 accuracy_score : 0.6278
+
 
 """
 
