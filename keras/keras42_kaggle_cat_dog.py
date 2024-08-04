@@ -39,7 +39,7 @@ path_test = "C:/ai5/_data/kaggle/dogs-vs-cats-redux-kernels-edition/test/"
 
 xy_train = train_datagen.flow_from_directory(
     path_train,            
-    target_size=(120,120),  
+    target_size=(100,100),  
     batch_size=30000,          
     class_mode='binary',  
     color_mode='rgb',  
@@ -48,7 +48,7 @@ xy_train = train_datagen.flow_from_directory(
 
 xy_test = test_datagen.flow_from_directory(
     path_test, 
-    target_size=(120,120),
+    target_size=(100,100),
     batch_size=30000,            
     class_mode='binary',
     color_mode='rgb',
@@ -71,7 +71,7 @@ xy_test = xy_test[0][0]
 
 #2. 모델 구성
 model = Sequential()
-model.add(Conv2D(64, (3,3), input_shape=(120,120,3), strides=1, activation='relu',padding='same')) 
+model.add(Conv2D(64, (3,3), input_shape=(100,100,3), strides=1, activation='relu',padding='same')) 
 model.add(Dropout(0.2))
 model.add(Conv2D(32, (3,3), activation='relu', strides=1, padding='same'))    
 model.add(MaxPooling2D())    
@@ -83,7 +83,7 @@ model.add(Dense(4, activation='relu'))
 model.add(Dense(1, activation='sigmoid'))
 
 #3. 컴파일, 훈련
-model.compile(loss='binary_crossentropy', optimizer='sgd', metrics=['acc'])
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
 
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 es = EarlyStopping(monitor='val_loss', mode='min', 
@@ -134,7 +134,7 @@ print('accuracy_score :', r2)
 
 
 ### csv 파일 만들기 ###
-y_submit = model.predict(xy_test,batch_size=8)
+y_submit = model.predict(xy_test,batch_size=4)
 # print(y_submit)
 
 # y_submit = np.round(y_submit,4)
@@ -142,7 +142,7 @@ y_submit = model.predict(xy_test,batch_size=8)
 
 print(y_submit)
 sampleSubmission_csv['label'] = y_submit
-sampleSubmission_csv.to_csv(path1 + "sampleSubmission_0803_1840.csv")
+sampleSubmission_csv.to_csv(path1 + "sampleSubmission_0803_1920.csv")
 
 
 
@@ -158,7 +158,10 @@ acc : 0.6278
 걸린 시간 : 272.36 초
 accuracy_score : 0.6278
 
-
+loss : 0.6347635388374329
+acc : 0.6496
+걸린 시간 : 290.02 초
+accuracy_score : 0.6496
 """
 
 
