@@ -26,8 +26,8 @@ print(x_train[0].shape) # (28, 28)
 # plt.imshow(x_train[0], cmap='gray')
 # plt.show()
 
-aaa = np.tile(x_train[0], augment_size).reshape(-1,28,28,1)   # augment_size의 형태로 x_train[0]을 반복
-print(aaa.shape)    # (100, 28, 28, 1)
+# aaa = np.tile(x_train[0], augment_size).reshape(-1,28,28,1)   # augment_size의 형태로 x_train[0]을 반복
+# print(aaa.shape)    # (100, 28, 28, 1)
 
 
 xy_data = train_datagen.flow(
@@ -35,23 +35,28 @@ xy_data = train_datagen.flow(
     np.zeros(augment_size),     # augment_size 형태의 0으로 가득찬 array 생성, y 데이터
     batch_size=augment_size,
     shuffle=False,
-).next()
+)   # .next()   # 이터레이터의 첫번째 배치를 가져옴
 
 # xy_data : x,y 데이터가 같이있는 튜플 형태, x와 y 각 데이터는 numpy형태
 
 print(xy_data)
-print(type(xy_data))       # <class 'tuple'>
+print(type(xy_data))       # .next() 가 있으면 tuple
+# <class 'keras.preprocessing.image.NumpyArrayIterator'>
 
-# print(xy_data.shape)     # AttributeError: 'tuple' object has no attribute 'shape'
-print(len(xy_data))        # 2 (x와 y)
-print(xy_data[0].shape)    # (100, 28, 28, 1) / x 데이터는 넘파이라 shape 찍힘
-print(xy_data[1].shape)    # (100,)
+# print(xy_data.shape)     # .next()가 있으면 AttributeError: 'tuple' object has no attribute 'shape'
+# AttributeError: 'NumpyArrayIterator' object has no attribute 'shape'
+
+print(len(xy_data))        # 1
+# print(xy_data[0].shape)    # (AttributeError: 'tuple' object has no attribute 'shape'
+# print(xy_data[1].shape)    # (100,)
+
+print(xy_data[0][0].shape)   # (100, 28, 28, 1), [0][0]에 데이터가 들어가 있음
+
 # x데이터는 변환된 데이터 100개, y데이터는 다 0 -> y데이터는 상관 없고 x데이터를 변환 시켜줌
 
 plt.figure(figsize=(7,7))
 for i in range(49):
     plt.subplot(7, 7, i+1)   # 7x7 판 하나 준비, i+1 => 인덱스 49개 생성 (index 1부터)
-    plt.imshow(xy_data[0][i], cmap='gray')
+    plt.imshow(xy_data[0][0][i], cmap='gray')
     
 plt.show()
-
