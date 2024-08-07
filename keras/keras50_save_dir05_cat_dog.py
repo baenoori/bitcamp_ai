@@ -91,7 +91,7 @@ train_datagen =  ImageDataGenerator(
     width_shift_range=0.2,       # 평행이동  <- 데이터 증폭
     # height_shift_range=0.1,      # 평행이동 수직  <- 데이터 증폭
     rotation_range=15,            # 각도 조절 (정해진 각도만큼 이미지 회전)
-    # zoom_range=1.2,              # 축소 또는 확대
+    zoom_range=0.2,              # 축소 또는 확대
     # shear_range=0.7,             # 좌표 하나를 고정시키고 다른 몇개의 좌표를 이동시키는 변환 (찌부시키기)
     fill_mode='nearest',         # 10% 이동 시 한쪽은 소실, 한쪽은 가까이에 있던 부분의 이미지로 채워짐
 )
@@ -127,6 +127,7 @@ x_augmented = train_datagen.flow(
     x_augmented, y_augmented,
     batch_size=augment_size,
     shuffle=False,
+    # save_to_dir='C:/ai5/_data/_save_img/05_cat_dog/'
 ).next()[0]
 
 print(x_augmented.shape)   
@@ -141,7 +142,7 @@ print(x_train.shape, y_train.shape)     # (45500, 100, 100, 3) (45500,)
 
 print(np.unique(y_train, return_counts=True))
 
-
+# """
 #2. 모델 구성
 model = Sequential()
 model.add(Conv2D(32, (3, 3), input_shape=(100, 100, 3),activation='relu'))
@@ -211,15 +212,15 @@ print('accuracy_score :', r2)
 
 
 ### csv 파일 만들기 ###
-y_submit = model.predict(xy_test,batch_size=2)
+y_submit = model.predict(xy_test,batch_size=1)
 # print(y_submit)
 y_submit = np.clip(y_submit, 1e-6, 1-(1e-6))
 
 print(y_submit)
 sampleSubmission_csv['label'] = y_submit
-sampleSubmission_csv.to_csv(path1 + "sampleSubmission_0806_1750_데이터증폭.csv")
+sampleSubmission_csv.to_csv(path1 + "sampleSubmission_0807_1110_데이터증폭.csv")
 
-
+# """
 
 """
 [0.28]
@@ -228,11 +229,14 @@ acc : 0.88833
 걸린 시간 : 304.15 초
 accuracy_score : 0.8883333333333333
 
-[데이터 ]
+[데이터 증폭]
 loss : 0.2930927872657776
 acc : 0.88556
 걸린 시간 : 953.75 초
 accuracy_score : 0.8855555555555555
+
+[증폭 데이터 세이브(검수)]
+
 
 """
 
