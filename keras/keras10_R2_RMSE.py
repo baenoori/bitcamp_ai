@@ -28,13 +28,24 @@ print("loss :", loss)
 
 #sklearn 라이브러리를 이용한 R2 구하기
 y_predict = model.predict(x_test)
-from sklearn.metrics import r2_score
+from sklearn.metrics import r2_score, mean_squared_error
 r2 = r2_score(y_test, y_predict)    # loss를 테스트한 데이터와 동일한 걸로 평가해야함 
 
 print("r2 스코어 :", r2)    # 하이퍼 파라미터 튜닝을 통해 r2스코어를 높임
+
+def RMSE(y_test, y_predict):
+    return np.sqrt(mean_squared_error(y_test,y_predict))
+rmse = RMSE(y_test, y_predict)    
+print('RMSE :', rmse)
 
 """  
 결과 예시
 loss : 12.05027961730957
 r2 스코어 : 0.7343376445919774
+"""
+
+"""
+loss : 11.791112899780273
+r2 스코어 : 0.7400512116068101
+RMSE : 3.4338192400769074
 """
