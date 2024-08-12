@@ -9,12 +9,16 @@ import pandas as pd
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D, BatchNormalization
 import time
-from sklearn.metrics import r2_score, accuracy_score
+from sklearn.metrics import r2_score, accuracy_score, mean_squared_error
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from tensorflow.keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.layers import LSTM, Dense
+from tensorflow.keras.layers import LSTM, Dense, GRU, SimpleRNN
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+
+import os
+
+os.environ["TF_GPU_ALLOCATOR"] = "cuda_malloc_async"
 
 #1. 데이터
 path1 = "C:/ai5/_data/kaggle/jena/"
@@ -22,16 +26,18 @@ datasets = pd.read_csv(path1 + "jena_climate_2009_2016.csv", index_col=0)
 
 print(datasets.shape)   # (420551, 14)
 
-a = datasets[:-144]
-print(a.shape)      # (420407, 14)
-
 y_cor = datasets[-144:]['T (degC)']            # 예측치 정답
 print(y_cor.shape)    # (144,)
 
-x_predict = datasets[-144:]
-print(x_predict.shape)      # (144, 14)
+## 훈련할 데이터 자르기
+x_data = datasets[:-288].drop(['T (degC)'], axis=1)
+y_data = datasets[144:-144]['T (degC)']
 
-size = 144                    # timestep 사이즈
+print(x_data)       # [420407 rows x 13 columns]
+print(y_data)       # Name: T (degC), Length: 420407, dtype: float64
+
+size_x = 144 
+size_y = 144
 
 def split_x(dataset, size):
     aaa = []
@@ -40,85 +46,139 @@ def split_x(dataset, size):
         aaa.append(subset)
     return np.array(aaa)
 
-bbb = split_x(a, size)
-print(bbb)
-print(bbb.shape)        # (420264, 144, 14)
+x = split_x(x_data, size_x)
+y = split_x(y_data, size_y)
 
-x = bbb[:, : -144, ]
-y = bbb[:, -144 : , 1]       # T 데이터 
-
-print(x.shape, y.shape) # (420120, 144, 14) (420120, 144)
-# print(y)
+# x = x[:-1]
+# y = y[(size_x-size_y+1):]
 
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1,random_state=231)
+print(x.shape, y.shape)     # (420120, 144, 13) (420120, 144)
+# print(x, y)
+
+# 예측을 위한 x 데이터 
+x_predict = datasets[-288:-144].drop(['T (degC)'], axis=1)
+x_predict = x_predict.to_numpy()
+print(x_predict)
+print(x_predict.shape)  # (144, 13)
+# x_predict = split_x(x_predict, size_x)
+print(x_predict.shape)  # (144, 13)
+
+x_predict = x_predict.reshape(1,144,13)
+
+# print(y[1])
+
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=2532)
 
 
+print(x_train.shape)        # (378108, 144, 13)
+print(x_test.shape)         # (42012, 144, 13)
 
+# # ## 스케일링 추가 ###
+# from sklearn.preprocessing import StandardScaler
+# x_train = x_train.reshape(378108*144,13)
+# x_test = x_test.reshape(42012*144,13)
+# scaler = MinMaxScaler()
+# scaler.fit(x_train)
+# x_train = scaler.transform(x_train)
+# x_test = scaler.transform(x_test)
+# x_train = x_train.reshape(378108,144,13)
+# x_test = x_test.reshape(42012,144,13)
+
+# x_predict = x_predict.reshape(144,13)
+# x_predict = scaler.transform(x_predict)
+# x_predict = x_predict.reshape(1,144,13)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
 #2. 모델 구성
 model = Sequential()
-# model.add(SimpleRNN(units=10, input_shape=(3,1))) # timesteps , features
-model.add(LSTM(units=32, input_shape=(144,14))) # timesteps , features
+model.add(LSTM(units=64, input_shape=(144, 13), return_sequences=True))
+model.add(Dropout(0.2)) 
+model.add(LSTM(32, return_sequences=True))
+model.add(Dropout(0.2))  
+model.add(LSTM(64))
+model.add(Flatten())
+model.add(Dropout(0.5))  
 model.add(Dense(64, activation='relu'))
-model.add(Dense(64, activation='relu'))
-model.add(Dense(128, activation='relu'))
-model.add(Dense(128, activation='relu'))
-model.add(Dense(256, activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(128, activation='relu'))
-model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.1))
-model.add(Dense(64, activation='relu'))
-model.add(Dense(64, activation='relu'))
-model.add(Dense(32, activation='relu'))
-model.add(Dense(16, activation='relu'))
-model.add(Dense(8, activation='relu'))
-model.add(Dense(1))
+model.add(Dense(144))
 
 
 #3. 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam')
-
-es = EarlyStopping(monitor='loss', mode='min', 
-                   patience=20, verbose=1,
+start = time.time()
+es = EarlyStopping(monitor='val_loss', mode='min', 
+                   patience=10, verbose=3,
                    restore_best_weights=True,
                    )
 
-###### mcp 세이브 파일명 만들기 ######
+###### mcp 세이브 파일명 만들기 ###### 
 import datetime
 date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")
 
-path = './_save/keras52/'
-filename = '{epoch:04d}-{loss:.4f}.hdf5' 
-filepath = "".join([path, 'k52_2_', date, '_', filename])   
+path = './_save/keras55/'
+filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
+filepath = "".join([path, 'k55_', date, '_', filename])   
 #####################################
 
 mcp = ModelCheckpoint(
-    monitor='loss',
+    monitor='val_loss',
     mode='auto',
-    verbose=1,     
+    verbose=3,     
     save_best_only=True,   
     filepath=filepath, 
 )
 
-model.fit(x, y, epochs=5, batch_size=4, 
-        #   validation_split=0.1,
-        #   callbacks=[es, mcp],
+model.fit(x_train, y_train, epochs=2000, batch_size=512, 
+          validation_split=0.1,
+          callbacks=[es, mcp],
           verbose=3
           )
+end = time.time()
+
 
 #4. 평가, 예측
-result = model.evaluate(x, y)
+result = model.evaluate(x_test, y_test, batch_size=512)
 print('loss :', result)
 
+y_pred = model.predict(x_predict, batch_size=512)
+print(y_pred.shape)
+print('시간 :', end-start)
 
-y_pred = model.predict(x_predict)
 print(y_pred)
 
 
-acc = accuracy_score(y_cor, y_pred)
-print(y_pred)
+# y_pred = np.round(y_pred,2)
+# acc = accuracy_score(y_cor, y_pred)
+
+# rmse 를 위해 shape 맞춰주기
+y_pred = np.array([y_pred]).reshape(144,1)
+
+def RMSE(y_test, y_predict):
+    return np.sqrt(mean_squared_error(y_test,y_predict))
+rmse = RMSE(y_cor, y_pred)    
+print('RMSE :', rmse)
+
+# loss : 16.146814346313477
+# (1, 144)
+# 시간 : 2048.653157234192
+
+# RMSE : 1.785246707543831   k55_0809_1515_0131-5.7192
 
 
 
+### SCV 파일 ###
+
+# submit = pd.read_csv(path1 + "jena_climate_2009_2016.csv")
+
+# submit = submit[['Date Time','T (degC)']]
+# submit = submit.tail(144)
+# print(submit)
+
+# y_submit = pd.DataFrame(y_predict)
+# print(y_submit)
+
+# submit['T (degC)'] = y_pred
+# print(submit)                  # [6493 rows x 1 columns]
+# print(submit.shape)            # (6493, 1)
+
+# submit.to_csv(path1 + "jena_배누리.csv", index=False)

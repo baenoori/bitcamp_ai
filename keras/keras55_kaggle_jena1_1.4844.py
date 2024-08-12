@@ -13,7 +13,7 @@ from sklearn.metrics import r2_score, accuracy_score, mean_squared_error
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from tensorflow.keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.layers import LSTM, Dense
+from tensorflow.keras.layers import LSTM, Dense, GRU, SimpleRNN
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 
 import os
@@ -75,16 +75,19 @@ print(x_train.shape)        # (378108, 144, 13)
 print(x_test.shape)         # (42012, 144, 13)
 
 # ## 스케일링 추가 ###
-# from sklearn.preprocessing import StandardScaler
-# x_train = x_train.reshape(378108*144,13)
-# x_test = x_test.reshape(42012*144,13)
-# scaler = MinMaxScaler()
-# scaler.fit(x_train)
-# x_train = scaler.transform(x_train)
-# x_test = scaler.transform(x_test)
-# x_train = x_train.reshape(378108,144,13)
-# x_test = x_test.reshape(42012,144,13)
+from sklearn.preprocessing import StandardScaler
+x_train = x_train.reshape(378108*144,13)
+x_test = x_test.reshape(42012*144,13)
+scaler = MinMaxScaler()
+scaler.fit(x_train)
+x_train = scaler.transform(x_train)
+x_test = scaler.transform(x_test)
+x_train = x_train.reshape(378108,144,13)
+x_test = x_test.reshape(42012,144,13)
 
+x_predict = x_predict.reshape(144,13)
+x_predict = scaler.transform(x_predict)
+x_predict = x_predict.reshape(1,144,13)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
 #2. 모델 구성
 model = Sequential()
@@ -94,6 +97,7 @@ model.add(LSTM(32, return_sequences=True))
 model.add(Dropout(0.2))  
 model.add(LSTM(64))
 model.add(Flatten())
+model.add(Dropout(0.5))  
 model.add(Dense(64, activation='relu'))
 model.add(Dense(144))
 
@@ -102,7 +106,7 @@ model.add(Dense(144))
 model.compile(loss='mse', optimizer='adam')
 start = time.time()
 es = EarlyStopping(monitor='val_loss', mode='min', 
-                   patience=30, verbose=3,
+                   patience=10, verbose=3,
                    restore_best_weights=True,
                    )
 
@@ -159,13 +163,6 @@ print('RMSE :', rmse)
 # 시간 : 2048.653157234192
 
 # RMSE : 1.785246707543831   k55_0809_1515_0131-5.7192
-
-
-
-
-
-
-
 
 
 
