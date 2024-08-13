@@ -13,7 +13,7 @@ from sklearn.metrics import r2_score, accuracy_score, mean_squared_error
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from tensorflow.keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.layers import LSTM, Dense, GRU, SimpleRNN
+from tensorflow.keras.layers import LSTM, Dense, GRU, SimpleRNN, Bidirectional, Conv1D, Flatten, MaxPooling1D
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 
 import os
@@ -91,11 +91,13 @@ x_predict = x_predict.reshape(1,144,13)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
 #2. 모델 구성
 model = Sequential()
-model.add(LSTM(units=64, input_shape=(144, 13), return_sequences=True))
-model.add(Dropout(0.2)) 
-model.add(LSTM(32, return_sequences=True))
+model.add(Conv1D(128, 3, input_shape=(144,13)))
+model.add(MaxPooling1D()) 
 model.add(Dropout(0.2))  
-model.add(LSTM(64))
+model.add(Conv1D(64, 3))
+model.add(MaxPooling1D())
+model.add(Dropout(0.2))  
+model.add(Conv1D(64, 3))
 model.add(Flatten())
 model.add(Dropout(0.5))  
 model.add(Dense(64, activation='relu'))
@@ -103,10 +105,10 @@ model.add(Dense(144))
 
 
 #3. 컴파일, 훈련
-model.compile(loss='mse', optimizer='adam')
+model.compile(loss='mse', optimizer='adam') #metrics=['rmse'])
 start = time.time()
 es = EarlyStopping(monitor='val_loss', mode='min', 
-                   patience=10, verbose=3,
+                   patience=30, verbose=1,
                    restore_best_weights=True,
                    )
 
@@ -115,9 +117,9 @@ import datetime
 date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")
 
-path = './_save/keras55/'
+path = './_save/keras58/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
-filepath = "".join([path, 'k55_', date, '_', filename])   
+filepath = "".join([path, 'k58_2_', date, '_', filename])   
 #####################################
 
 mcp = ModelCheckpoint(
@@ -131,7 +133,7 @@ mcp = ModelCheckpoint(
 model.fit(x_train, y_train, epochs=2000, batch_size=512, 
           validation_split=0.1,
           callbacks=[es, mcp],
-          verbose=3
+          verbose=1
           )
 end = time.time()
 
@@ -146,11 +148,10 @@ print('시간 :', end-start)
 
 print(y_pred)
 
-
 # y_pred = np.round(y_pred,2)
 # acc = accuracy_score(y_cor, y_pred)
 
-# rmse 를 위해 shape 맞춰주기
+# rmse 를 위해 shape 맞춰주기 
 y_pred = np.array([y_pred]).reshape(144,1)
 
 def RMSE(y_test, y_predict):
@@ -158,11 +159,19 @@ def RMSE(y_test, y_predict):
 rmse = RMSE(y_cor, y_pred)    
 print('RMSE :', rmse)
 
+
+##### 기존 #####
 # loss : 16.146814346313477
 # 시간 : 2048.653157234192
 # RMSE : 1.785246707543831   k55_0809_1515_0131-5.7192
 
+#### bidirectional ####
+# RMSE : 4.937940444308187
 
+##### Conv1D #####
+# loss : 5.8745808601379395
+# 시간 : 723.930643081665
+# RMSE : 1.9208189362390746
 
 ### SCV 파일 ###
 
