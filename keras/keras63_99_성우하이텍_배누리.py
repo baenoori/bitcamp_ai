@@ -189,8 +189,8 @@ loss = model.evaluate([x1_test,x2_test], y_test)
 # print('loss :', loss)
 # print('걸린 시간 :', round(end-start,2), '초')
 
-result = model.predict([x1_pre,x2_pre])
+results = int(model.predict([x1_pre,x2_pre]))
 
-print('성우하이텍 8월19일 종가 :', round(result))
+print('성우하이텍 8월19일 종가 :', results)
 
-
+# 성우하이텍 8월19일 종가 : 7433

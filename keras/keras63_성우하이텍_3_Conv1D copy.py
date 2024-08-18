@@ -117,7 +117,7 @@ x2_pre = x2_pre.reshape(1,11,15)
 
 #2-1. 모델
 input1 = Input(shape=(11,15))
-dense1 = LSTM(32, activation='relu', name='bit1', return_sequences=True)(input1)
+dense1 = Conv1D(32, 3, activation='relu', name='bit1')(input1)
 dense2 = Conv1D(64, 3, activation='relu', name='bit2')(dense1)
 drop1 = Dropout(0.2)(dense2)
 dense3 = Conv1D(128, 3, activation='relu', name='bit3')(drop1)
@@ -128,7 +128,7 @@ output1 = Dense(32, activation='relu', name='bit5')(dense4)
 
 #2-2. 모델
 input11 = Input(shape=(11,15))
-dense11 = LSTM(32, activation='relu', name='bit11', return_sequences=True)(input11)
+dense11 = Conv1D(32, 3, activation='relu', name='bit11')(input11)
 dense21 = Conv1D(64, 3, activation='relu', name='bit21')(dense11)
 drop2 = Dropout(0.2)(dense21)
 dense31 = Conv1D(128, 3, activation='relu', name='bit31')(drop2)
@@ -149,6 +149,7 @@ model = Model(inputs=[input1, input11], outputs=last_output)
 
 # model.summary()
 
+
 #3. 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam')
 start = time.time()
@@ -162,7 +163,7 @@ import datetime
 date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")
 
-path = './_save/중간고사가중치/'
+path = './_save/중간고사/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
 filepath = "".join([path, '중간고사_', date, '_', filename])   
 #####################################
@@ -175,12 +176,13 @@ mcp = ModelCheckpoint(
     filepath=filepath, 
 )
 
-model.fit([x1_train,x2_train], y_train, epochs=5000, batch_size=16, 
-          validation_split=0.1, 
+model.fit([x1_train,x2_train], y_train, epochs=5000, batch_size=1, 
+          validation_split=0.1,
           callbacks=[es, mcp],
           verbose=1,
           )
 end = time.time()
+
 
 #4. 평가, 예측
 result = model.evaluate([x1_test,x2_test], y_test)
@@ -190,6 +192,8 @@ print('걸린 시간 :', round(end-start,2), '초')
 y_pred = model.predict([x1_pre,x2_pre])
 
 print('8월 19일 월요일 종가의 예측 결과:', y_pred)
+
+
 
 # 중간고사_0816_1203_0041-1086031.6250.hdf5
 # loss : 1654454.625
@@ -213,6 +217,12 @@ print('8월 19일 월요일 종가의 예측 결과:', y_pred)
 # 걸린 시간 : 72.41
 # 8월 19일 월요일 종가의 예측 결과: [[7746.39]]
 
+# Conv1D - Standerdscaler
+# 중간고사_0816_1301_0066-129835.0625
+# loss : 162709.53125
+# 걸린 시간 : 168.14
+# 8월 19일 월요일 종가의 예측 결과: [[8247.826]]
+
 # Conv1D - Standerdscaler epo 1000- pat 10
 # 중간고사_0816_1305_0047-153063.5000.hdf5
 # loss : 168103.890625
@@ -225,44 +235,12 @@ print('8월 19일 월요일 종가의 예측 결과:', y_pred)
 # 걸린 시간 : 257.54
 # 8월 19일 월요일 종가의 예측 결과: [[8039.0913]]
 
+# 중간고사_0816_1316_0216-62847.1016.hdf5
+# loss : 68416.90625
+# 걸린 시간 : 589.13
+# 8월 19일 월요일 종가의 예측 결과: [[8256.192]]
+
 # 중간고사_0816_1411_0236-87423.6562.hdf5
 # loss : 108230.9140625
 # 걸린 시간 : 1282.81
 # 8월 19일 월요일 종가의 예측 결과: [[7714.728]]
-
-# Conv1D LSTM 
-# 중간고사_0816_1434_0113-76139.1953.hdf5
-# loss : 90807.8828125
-# 걸린 시간 : 3450.58 초
-# 8월 19일 월요일 종가의 예측 결과: [[7657.7554]]
-
-# 중간고사_0817_1259_0256-63810.3477.hdf5
-# loss : 52952.66015625
-# 걸린 시간 : 600.96 초
-# 8월 19일 월요일 종가의 예측 결과: [[7588.432]]
-
-# 중간고사_0817_1341_0156-75324.6094_7509.hdf5
-# loss : 92636.703125
-# 걸린 시간 : 621.75 초
-
-# 8월 19일 월요일 종가의 예측 결과: [[7509.644]]
-
-# 중간고사_0817_1412_0221-91153.7812_7363
-# loss : 81360.0390625
-# 걸린 시간 : 850.93 초
-# 8월 19일 월요일 종가의 예측 결과: [[7363.7935]]
-
-# 중간고사_0817_1600_0120-68155.8516.hdf5
-# loss : 99366.5078125
-# 걸린 시간 : 512.67 초
-# 8월 19일 월요일 종가의 예측 결과: [[7433.439]]
-
-# 중간고사_0818_1511_0321-90455.8281_7500
-# oss : 71988.9140625
-# 걸린 시간 : 331.4 초
-# 8월 19일 월요일 종가의 예측 결과: [[7500.4146]]
-
-# 중간고사_0818_1555_0116-103459.7969_7355
-# loss : 108354.5625
-# 걸린 시간 : 312.64 초
-# 8월 19일 월요일 종가의 예측 결과: [[7355.7046]]
