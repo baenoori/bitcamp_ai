@@ -42,3 +42,5 @@ y_pre2 = best_model.predict(x_test)
 print('걸린 시간 :', round(end_time - start_time, 2), '초')
 
 
+
+
