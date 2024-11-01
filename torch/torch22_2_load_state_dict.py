@@ -191,3 +191,5 @@ y_true = np.array(y_true).flatten()
 r2 = r2_score(y_true, y_predict)
 print('R2:', r2) #R2: 0.9146477580070496
 print('total_loss:', total_loss.item()) #total_loss : 920.9242553710938
+
+
