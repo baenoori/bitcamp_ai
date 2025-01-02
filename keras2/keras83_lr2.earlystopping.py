@@ -36,6 +36,7 @@ for i in range(epochs):
         w = w + lr
     
     if(loss < min): 
+        count = 0
         min = loss
           
     else :
