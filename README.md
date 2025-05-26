@@ -13,5 +13,5 @@
 - 웹크롤링(BeautifulSoup)을 통한 네이버 뉴스 요약 및 flask를 이용해 웹페이지 제작
 - YOLO와 Catboost, XGBoost, LightGBM 분류 모델 학습 및 Voting, Stacking, 전이 학습 진행, Streamlit을 통한 나만의 AI 홈트레이너 프로젝트 진행
 
-
-정리 노션 : https://crimson-hour-184.notion.site/AI-5-1ff216c7f8af81dbbe3fd2bec9bf91ee?pvs=74
+ 
+**노션** : https://crimson-hour-184.notion.site/AI-5-1ff216c7f8af81dbbe3fd2bec9bf91ee?pvs=74
